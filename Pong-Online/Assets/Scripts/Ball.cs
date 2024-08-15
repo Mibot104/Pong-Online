@@ -25,7 +25,7 @@ public class Ball : NetworkBehaviour
 
 	public IEnumerator WaitForReset()
 	{
-		while (!transform.position.Equals(Vector2.zero))
+		while (!transform.position.Equals(Vector2.zero) || rb2D.velocity != Vector2.zero)
 		{
 			ResetBallRPC(false);
 			yield return new WaitForEndOfFrame();
