@@ -34,8 +34,7 @@ public class UI : NetworkBehaviour
 		playerTwoGoalText.text = newValue.ToString();
 	}
 
-	[Rpc(SendTo.Everyone)]
-	public void VictoryRPC(bool isPlayerOne)
+	private void Victory(bool isPlayerOne)
 	{
 		chatObject.SetActive(true);
 		readyButton.gameObject.SetActive(true);
@@ -44,8 +43,8 @@ public class UI : NetworkBehaviour
 		victoryText.text = isPlayerOne ? "Player One Wins" : "Player Two Wins";
 	}
 
-	[Rpc(SendTo.Everyone)]
-	public void StartLobbyRPC()
+
+	private void StartLobby()
 	{
 		readyButton.gameObject.SetActive(true);
 		chatObject.SetActive(true);
@@ -55,16 +54,34 @@ public class UI : NetworkBehaviour
 		if (IsServer)
 			goalInput.gameObject.SetActive(true);
 	}
-
-	[Rpc(SendTo.Everyone)]
-	public void StartGameRPC(int goalsToWin)
+	
+	private void StartGame(int goalsToWin)
 	{
 		chatObject.SetActive(false);
 		playerOneGoalText.enabled = true;
 		playerTwoGoalText.enabled = true;
 		victoryText.text = "First to " + goalsToWin;
 	}
+	
 
+	[Rpc(SendTo.Everyone)]
+	public void StartLobbyRPC()
+	{
+		StartLobby();
+	}
+
+	[Rpc(SendTo.Everyone)]
+	public void StartGameRPC(int goalsToWin)
+	{
+		StartGame(goalsToWin);
+	}
+
+	[Rpc(SendTo.Everyone)]
+	public void VictoryRPC(bool isPlayerOne)
+	{
+		Victory(isPlayerOne);
+	}
+	
 	public void Ready()
 	{
 		readyButton.gameObject.SetActive(false);

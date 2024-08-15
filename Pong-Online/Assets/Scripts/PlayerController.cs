@@ -49,13 +49,13 @@ public class PlayerController : NetworkBehaviour
 		}
 	}
 
-	private void Update()
+	private void FixedUpdate()
 	{
 		if (IsServer)
 		{
-			transform.position += movementSpeed * Time.deltaTime * movement;
+			transform.position += movementSpeed * NetworkManager.Singleton.LocalTime.FixedDeltaTime * movement;
 			if (transform.position.y < minY || transform.position.y > maxY)
-				transform.position -= movementSpeed * Time.deltaTime * movement;
+				transform.position -= movementSpeed * NetworkManager.Singleton.LocalTime.FixedDeltaTime * movement;
 		}
 	}
 

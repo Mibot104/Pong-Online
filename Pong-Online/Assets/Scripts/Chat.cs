@@ -24,17 +24,7 @@ public class Chat : NetworkBehaviour
         gameManager = FindObjectOfType<GameManager>();
     }
 
-    public void ClearMessages()
-    {
-        while (chatMessages.Count > 0)
-        {
-            Destroy(chatMessages[^1].textObject.gameObject);
-            chatMessages.Remove(chatMessages[^1]);
-        }
-    }
-
-    [Rpc(SendTo.Everyone)]
-    private void SendMessageClientRPC(FixedString128Bytes message, FixedString128Bytes owner)
+    private void MakeChatMessage(FixedString128Bytes message, FixedString128Bytes owner)
     {
         if (chatMessages.Count >= maxMessages)
         {
@@ -48,6 +38,12 @@ public class Chat : NetworkBehaviour
         newMessage.textObject = chatObject.GetComponent<TMP_Text>();
         newMessage.textObject.text = newMessage.owner + ": " + newMessage.message;
         chatMessages.Add(newMessage);
+    }
+
+    [Rpc(SendTo.Everyone)]
+    private void SendMessageClientRPC(FixedString128Bytes message, FixedString128Bytes owner)
+    {
+        MakeChatMessage(message, owner);
     }
 
     [Rpc(SendTo.Server)]
@@ -64,6 +60,15 @@ public class Chat : NetworkBehaviour
             FixedString128Bytes message = chatInput.text;
             SendMessageServerRPC(message, owner);
             chatInput.text = "";
+        }
+    }
+    
+    public void ClearMessages()
+    {
+        while (chatMessages.Count > 0)
+        {
+            Destroy(chatMessages[^1].textObject.gameObject);
+            chatMessages.Remove(chatMessages[^1]);
         }
     }
 }
